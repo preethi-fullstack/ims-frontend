@@ -1,0 +1,274 @@
+/* Purchase Component Styles */
+
+/* Header Styling */
+.purchase-header {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(46, 204, 113, 0.2);
+}
+
+.purchase-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.5rem;
+}
+
+/* Form Styling */
+.purchase-form {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.purchase-form:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Product Search */
+.product-search-container {
+  position: relative;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f8f9fa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-result-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(3px);
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+/* Items List */
+.items-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.item-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.item-card:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.item-remove {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.item-remove:hover {
+  background: #e74c3c;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Quantity Input */
+.quantity-input {
+  width: 80px;
+  text-align: center;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  padding: 0.25rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.quantity-input:focus {
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.25);
+}
+
+/* Order Summary */
+.order-summary {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 2px solid #2ecc71;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #27ae60;
+}
+
+/* Action Buttons */
+.action-btn {
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+}
+
+.action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Supplier Info */
+.supplier-info {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+/* Loading State */
+.loading-state {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 100;
+}
+
+/* Success Animation */
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.success-pulse {
+  animation: successPulse 0.5s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .purchase-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .purchase-icon {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .purchase-form {
+    padding: 1.5rem;
+  }
+  
+  .search-results {
+    position: static;
+    margin-top: 0.5rem;
+  }
+  
+  .action-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .purchase-form {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  
+  .item-card {
+    page-break-inside: avoid;
+  }
+  
+  .action-btn {
+    display: none !important;
+  }
+}

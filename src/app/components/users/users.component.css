@@ -1,0 +1,139 @@
+.users-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.user-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.user-table .table {
+  margin-bottom: 0;
+}
+
+.user-table .table thead th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+  font-weight: 600;
+  color: #495057;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+.user-table .table tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-color: #e9ecef;
+}
+
+.user-table .table tbody tr:hover {
+  background-color: rgba(67, 97, 238, 0.02);
+}
+
+/* Badge Styles */
+.badge {
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+  font-size: 0.75em;
+  border-radius: 50px;
+}
+
+.badge.bg-danger {
+  background-color: #e76f51 !important;
+}
+
+.badge.bg-primary {
+  background-color: #4361ee !important;
+}
+
+.badge.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state h5 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+.empty-state p {
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Loading State */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 10;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-table .table {
+    font-size: 0.85rem;
+  }
+  
+  .user-table .table thead th,
+  .user-table .table tbody td {
+    padding: 0.75rem;
+  }
+  
+  .btn-group .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Button Groups */
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+}
+
+.btn-group-sm .btn-outline-primary {
+  border-color: #4361ee;
+  color: #4361ee;
+}
+
+.btn-group-sm .btn-outline-primary:hover {
+  background-color: #4361ee;
+  color: white;
+}
+
+.btn-group-sm .btn-outline-danger {
+  border-color: #e76f51;
+  color: #e76f51;
+}
+
+.btn-group-sm .btn-outline-danger:hover {
+  background-color: #e76f51;
+  color: white;
+}

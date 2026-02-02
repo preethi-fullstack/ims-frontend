@@ -1,0 +1,52 @@
+<div class="container mt-4">
+  <h2>{{ isEditMode ? 'Edit Category' : 'Add Category' }}</h2>
+
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    <!-- Name Field -->
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': f['name'].touched && f['name'].errors
+        }"
+      />
+      <div *ngIf="f['name'].touched && f['name'].errors?.['required']" class="text-danger">
+        Name is required
+      </div>
+      <div *ngIf="f['name'].touched && f['name'].errors?.['minlength']" class="text-danger">
+        Name must be at least 3 characters
+      </div>
+    </div>
+
+    <!-- Description Field -->
+    <div class="form-group mt-3">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="form-control"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mt-4">
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        {{ isEditMode ? 'Update' : 'Create' }}
+      </button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="onCancel()">
+        Cancel
+      </button>
+    </div>
+
+    <!-- Success / Error Messages -->
+    <div class="mt-3">
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    </div>
+  </form>
+</div>

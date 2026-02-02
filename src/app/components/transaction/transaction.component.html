@@ -1,0 +1,103 @@
+<div class="transaction-container">
+
+  <!--  Filters and Search -->
+  <div class="filters mb-3 d-flex flex-wrap align-items-end gap-3">
+
+    <!-- Search -->
+    <div class="form-group">
+      <label for="search">Search</label>
+      <input id="search" type="text" class="form-control" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Search by User, Product, Supplier, ID">
+    </div>
+
+    <!-- Transaction Type Filter -->
+    <div class="form-group">
+      <label for="filterType">Type</label>
+      <select id="filterType" class="form-select" [(ngModel)]="filterType" (change)="applyFilters()">
+        <option value="all">All</option>
+        <option value="purchase">Purchase</option>
+        <option value="sell">Sale</option>
+      </select>
+    </div>
+
+    <!-- Date Range Filter -->
+    <div class="form-group">
+      <label for="startDate">Start Date</label>
+      <input id="startDate" type="date" class="form-control" [(ngModel)]="startDate" (change)="applyFilters()">
+    </div>
+    <div class="form-group">
+      <label for="endDate">End Date</label>
+      <input id="endDate" type="date" class="form-control" [(ngModel)]="endDate" (change)="applyFilters()">
+    </div>
+
+    <!-- Clear Filters Button -->
+    <div class="form-group">
+      <button class="btn btn-secondary mt-2" (click)="clearFilters()">Clear Filters</button>
+    </div>
+
+  </div>
+
+  <!--  Loading & Error -->
+  <div *ngIf="loading" class="alert alert-info">Loading transactions...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <!--  Transactions Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th (click)="onSort('id')">ID</th>
+          <th (click)="onSort('transactionType')">Type</th>
+          <th (click)="onSort('userName')">User</th>
+          <th (click)="onSort('productName')">Product</th>
+          <th (click)="onSort('supplierName')">Supplier</th>
+          <th (click)="onSort('quantity')">Quantity</th>
+          <th (click)="onSort('totalPrice')">Total Price</th>
+          <th (click)="onSort('transactionDate')">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let transaction of paginatedTransactions">
+          <td>{{ transaction.id }}</td>
+          <td>
+            <span [ngClass]="getTransactionTypeClass(transaction)">
+              {{ getTransactionType(transaction) }}
+            </span>
+          </td>
+          <td>{{ transaction.userName }}</td>
+          <td>{{ transaction.productName }}</td>
+          <td>{{ transaction.supplierName || 'N/A' }}</td>
+          <td>{{ transaction.quantity }}</td>
+          <td>{{ formatCurrency(transaction.totalPrice) }}</td>
+          <td>{{ formatDateSafe(transaction.transactionDate) }}</td>
+        </tr>
+        <tr *ngIf="paginatedTransactions.length === 0">
+          <td colspan="8" class="text-center">No transactions found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!--  Pagination Controls -->
+  <nav *ngIf="totalPages > 1" aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+      </li>
+      <li class="page-item" *ngFor="let page of pageNumbers" [class.active]="currentPage === page">
+        <button class="page-link" (click)="changePage(page)">{{ page }}</button>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+      </li>
+    </ul>
+    <div class="text-center mt-2">
+      Showing {{ getStartIndex() }} - {{ getEndIndex() }} of {{ totalItems }} transactions
+    </div>
+  </nav>
+
+  <!--  Export CSV Button -->
+  <div class="text-end mt-3">
+    <button class="btn btn-primary" (click)="exportToCSV()">Export CSV</button>
+  </div>
+
+</div>

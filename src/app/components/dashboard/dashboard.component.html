@@ -1,0 +1,277 @@
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h2 mb-1">Dashboard</h1>
+          <p class="text-muted mb-0">Welcome to Inventory Management System</p>
+        </div>
+        <div>
+          <button class="btn btn-primary" routerLink="/products/add">
+            <i class="bi bi-plus-circle me-1"></i> Add Product
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3">Loading dashboard data...</p>
+    </div>
+  } @else {
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-primary border-4 shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                  Total Products
+                </div>
+                <div class="h5 mb-0 fw-bold">{{ stats.totalProducts }}</div>
+                <div class="mt-2">
+                  <span class="badge bg-primary">
+                    {{ stats.lowStockProducts }} low stock
+                  </span>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="bi bi-box-seam text-primary fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-success border-4 shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                  Categories
+                </div>
+                <div class="h5 mb-0 fw-bold">{{ stats.totalCategories }}</div>
+                <div class="mt-2">
+                  <a routerLink="/categories" class="text-decoration-none">
+                    <small>View all →</small>
+                  </a>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="bi bi-tags text-success fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-info border-4 shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                  Suppliers
+                </div>
+                <div class="h5 mb-0 fw-bold">{{ stats.totalSuppliers }}</div>
+                <div class="mt-2">
+                  <a routerLink="/suppliers" class="text-decoration-none">
+                    <small>Manage suppliers →</small>
+                  </a>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="bi bi-truck text-info fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-start border-warning border-4 shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                  Total Transactions
+                </div>
+                <div class="h5 mb-0 fw-bold">{{ stats.totalTransactions }}</div>
+                <div class="mt-2">
+                  <a routerLink="/transactions" class="text-decoration-none">
+                    <small>View history →</small>
+                  </a>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="bi bi-cash-stack text-warning fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+      <!-- Recent Products -->
+      <div class="col-xl-8 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0 fw-bold">
+              <i class="bi bi-box me-2"></i> Recent Products
+            </h5>
+            <a routerLink="/products" class="btn btn-sm btn-outline-primary">
+              View All
+            </a>
+          </div>
+          <div class="card-body">
+            @if (recentProducts.length === 0) {
+              <div class="text-center py-4">
+                <i class="bi bi-box text-muted fs-1"></i>
+                <p class="mt-2 text-muted">No products found</p>
+                <a routerLink="/products/add" class="btn btn-primary btn-sm mt-2">
+                  Add First Product
+                </a>
+              </div>
+            } @else {
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th class="text-end">Price</th>
+                      <th class="text-end">Stock</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (product of recentProducts; track product.id) {
+                      <tr>
+                        <td>
+                          <strong>{{ product.name }}</strong>
+                          <div class="small text-muted">{{ product.description | slice:0:50 }}...</div>
+                        </td>
+                        <td>{{ product.categoryName }}</td>
+                        <td class="text-end fw-bold">{{ formatCurrency(product.price) }}</td>
+                        <td class="text-end">{{ product.quantity }}</td>
+                        <td>
+                          <span class="badge {{ getStockStatusClass(product.quantity) }}">
+                            {{ getStockStatus(product.quantity) }}
+                          </span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="col-xl-4 mb-4">
+        <div class="card shadow h-100">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0 fw-bold">
+              <i class="bi bi-clock-history me-2"></i> Recent Transactions
+            </h5>
+            <a routerLink="/transactions" class="btn btn-sm btn-outline-primary">
+              View All
+            </a>
+          </div>
+          <div class="card-body">
+            @if (stats.recentTransactions.length === 0) {
+              <div class="text-center py-4">
+                <i class="bi bi-receipt text-muted fs-1"></i>
+                <p class="mt-2 text-muted">No transactions yet</p>
+                <div class="mt-3">
+                  <a routerLink="/purchase" class="btn btn-primary btn-sm me-2">
+                    <i class="bi bi-cart-plus"></i> Purchase
+                  </a>
+                  <a routerLink="/sell" class="btn btn-success btn-sm">
+                    <i class="bi bi-cart-check"></i> Sell
+                  </a>
+                </div>
+              </div>
+            } @else {
+              <div class="list-group list-group-flush">
+                @for (transaction of stats.recentTransactions; track transaction.id) {
+                  <div class="list-group-item border-0 px-0 py-3">
+                    <div class="d-flex w-100 justify-content-between">
+                      <div>
+                        <h6 class="mb-1">{{ transaction.productName }}</h6>
+                        <small class="text-muted">
+                          {{ transaction.userName }} • {{ transaction.supplierName }}
+                        </small>
+                      </div>
+                      <div class="text-end">
+                        <strong class="text-success">{{ formatCurrency(transaction.totalPrice) }}</strong>
+                        <div class="small text-muted">{{ formatDate(transaction.transactionDate) }}</div>
+                      </div>
+                    </div>
+                    <div class="mt-2">
+                      <span class="badge bg-light text-dark">
+                        Qty: {{ transaction.quantity }}
+                      </span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card shadow">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">
+              <i class="bi bi-lightning me-2"></i> Quick Actions
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3 col-6">
+                <a routerLink="/products/add" class="btn btn-outline-primary w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center">
+                  <i class="bi bi-plus-circle fs-2 mb-2"></i>
+                  <span>Add Product</span>
+                </a>
+              </div>
+              <div class="col-md-3 col-6">
+                <a routerLink="/purchase" class="btn btn-outline-success w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center">
+                  <i class="bi bi-cart-plus fs-2 mb-2"></i>
+                  <span>New Purchase</span>
+                </a>
+              </div>
+              <div class="col-md-3 col-6">
+                <a routerLink="/sell" class="btn btn-outline-danger w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center">
+                  <i class="bi bi-cart-check fs-2 mb-2"></i>
+                  <span>New Sale</span>
+                </a>
+              </div>
+              <div class="col-md-3 col-6">
+                <a routerLink="/suppliers/add" class="btn btn-outline-info w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center">
+                  <i class="bi bi-person-plus fs-2 mb-2"></i>
+                  <span>Add Supplier</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

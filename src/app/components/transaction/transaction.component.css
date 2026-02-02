@@ -1,0 +1,270 @@
+/* Transaction Component Styles */
+
+/* Filter Section */
+.filter-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.filter-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Table Styling */
+.transaction-table {
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.transaction-table th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  padding: 1rem;
+  border: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.transaction-table th.cursor-pointer:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  cursor: pointer;
+}
+
+.transaction-table td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.transaction-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.transaction-table tbody tr:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+  transform: translateX(2px);
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-success {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: #27ae60;
+  border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.badge-primary {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: #4361ee;
+  border: 1px solid rgba(67, 97, 238, 0.2);
+}
+
+/* Amount Styling */
+.amount-positive {
+  color: #27ae60;
+  font-weight: 600;
+}
+
+.amount-negative {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.amount-unit {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Pagination */
+.pagination-container {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.page-link {
+  border-radius: 8px;
+  margin: 0 2px;
+  border: 1px solid #e9ecef;
+  color: #4361ee;
+  min-width: 40px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.page-link:hover {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  transform: translateY(-1px);
+}
+
+.page-item.active .page-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #4361ee;
+  color: white;
+  box-shadow: 0 2px 5px rgba(67, 97, 238, 0.3);
+}
+
+/* Summary Cards */
+.summary-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.summary-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.summary-icon-success {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+}
+
+.summary-icon-primary {
+  background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+  color: white;
+}
+
+.summary-icon-warning {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+}
+
+.summary-icon-info {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+}
+
+/* Loading Animation */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 100;
+}
+
+/* Empty State */
+.empty-state {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  color: #dee2e6;
+  margin-bottom: 1.5rem;
+}
+
+/* Export Button */
+.export-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.export-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+}
+
+.export-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Date Filter */
+.date-filter {
+  position: relative;
+}
+
+.date-filter::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234361ee' class='bi bi-calendar' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .transaction-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .summary-card {
+    margin-bottom: 1rem;
+  }
+  
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .transaction-table {
+    border: 1px solid #ddd;
+  }
+  
+  .transaction-table th {
+    background: #f8f9fa !important;
+    color: #333 !important;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  .card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+}

@@ -1,0 +1,143 @@
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+      <i class="bi bi-people me-2"></i>Users
+      <span class="badge bg-info ms-2">{{filteredUsers.length}} users</span>
+    </h2>
+    
+    <div>
+      <!-- Toggle to show/hide extra users -->
+      <button *ngIf="users.length > 4" class="btn btn-outline-info me-2" 
+              (click)="toggleExtraUsers()">
+        <i class="bi bi-eye"></i>
+        {{showExtraUsers ? 'Hide Extra Users' : 'Show All Users'}}
+      </button>
+    </div>
+  </div>
+
+  <!-- System info alert -->
+  <div class="alert alert-info">
+    <i class="bi bi-info-circle me-2"></i>
+    <strong>System Configuration:</strong> 4 fixed users (1 Owner, 1 Admin, 2 Staff)
+  </div>
+
+  <!-- Warning for extra users -->
+  <div *ngIf="showExtraUsers && filteredUsers.length > 4" class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    Showing <strong>{{filteredUsers.length - 4}} extra users</strong>. Only the 4 main users have full access.
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+    {{errorMessage}}
+    <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+  </div>
+
+  <!-- Success message -->
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+    {{successMessage}}
+    <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading users...</p>
+  </div>
+
+  <!-- Users table -->
+  <div *ngIf="!loading && filteredUsers.length > 0" class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Role</th>
+              <th>Email</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers">
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar me-3" 
+                       [style.background-color]="getUserColor(user.id)"
+                       [style.width]="'40px'" 
+                       [style.height]="'40px'" 
+                       [style.border-radius]="'50%'"
+                       [style.display]="'flex'"
+                       [style.align-items]="'center'"
+                       [style.justify-content]="'center'"
+                       [style.color]="'white'"
+                       [style.font-weight]="'bold'">
+                    {{getUserInitials(user.name)}}
+                  </div>
+                  <div>
+                    <strong>{{user.name}}</strong>
+                    <div class="text-muted small">
+                      <i class="bi bi-person-circle me-1"></i>
+                      User ID: {{user.id}}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span [class]="getRoleBadgeClass(user.role)" class="badge">
+                  {{getRoleDisplayName(user.role)}}
+                </span>
+                <div class="small text-muted mt-1">
+                  {{getRoleDescription(user.role)}}
+                </div>
+              </td>
+              <td>
+                <div>{{user.email}}</div>
+                <div class="small text-muted">
+                  ID: {{user.id}}
+                </div>
+              </td>
+              <td>
+                <span [class]="getUserTypeBadge(user)" class="badge">
+                  {{getUserTypeText(user)}}
+                </span>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <!-- Edit button (only for main users with permission) -->
+                  <button *ngIf="canEditUser(user)" 
+                          class="btn btn-sm btn-outline-primary"
+                          [routerLink]="['/users', user.id, 'edit']">
+                    <i class="bi bi-pencil"></i> Edit
+                  </button>
+                  
+                  <!-- View profile button -->
+                  <button class="btn btn-sm btn-outline-info"
+                          [routerLink]="['/profile', user.id]">
+                    <i class="bi bi-eye"></i> View
+                  </button>
+                </div>
+                
+                <!-- Disabled actions info -->
+                <div *ngIf="!canEditUser(user) && isMainUser(user)" class="small text-muted mt-1">
+                  <i class="bi bi-lock"></i> Role cannot be changed
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- No users message -->
+  <div *ngIf="!loading && filteredUsers.length === 0" class="text-center my-5">
+    <i class="bi bi-people display-1 text-muted"></i>
+    <h4 class="mt-3">No users found</h4>
+    <p class="text-muted">No users match the current filter.</p>
+  </div>
+</div>

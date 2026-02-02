@@ -1,0 +1,100 @@
+<div class="container">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-md-6 col-lg-5 col-xl-4">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <div class="d-flex justify-content-center mb-3">
+            <div class="bg-white rounded-circle p-3">
+              <i class="bi bi-box-seam text-primary fs-1"></i>
+            </div>
+          </div>
+          <h2 class="fw-bold mb-0">IMS Login</h2>
+          <p class="mb-0 opacity-75">Sign in to your account</p>
+        </div>
+        <div class="card-body p-4 p-md-5">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="mb-4">
+              <label for="email" class="form-label fw-semibold">Email Address</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-envelope"></i>
+                </span>
+                <input type="email" class="form-control" id="email" formControlName="email"
+                  [class.is-invalid]="email?.invalid && email?.touched"
+                  placeholder="Enter your email">
+              </div>
+              @if (email?.invalid && email?.touched) {
+                <div class="invalid-feedback d-block mt-1">
+                  @if (email?.errors?.['required']) {
+                    <div>Email is required</div>
+                  }
+                  @if (email?.errors?.['email']) {
+                    <div>Please enter a valid email address</div>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="form-label fw-semibold">Password</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-lock"></i>
+                </span>
+                <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password"
+                  [class.is-invalid]="password?.invalid && password?.touched"
+                  placeholder="Enter your password">
+                <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordVisibility()">
+                  <i class="bi bi-eye{{ showPassword ? '-slash' : '' }}"></i>
+                </button>
+              </div>
+              @if (password?.invalid && password?.touched) {
+                <div class="invalid-feedback d-block mt-1">
+                  @if (password?.errors?.['required']) {
+                    <div>Password is required</div>
+                  }
+                  @if (password?.errors?.['minlength']) {
+                    <div>Password must be at least 6 characters</div>
+                  }
+                </div>
+              }
+            </div>
+
+            @if (errorMessage) {
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                {{ errorMessage }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            }
+
+            <div class="d-grid mb-4">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="loginForm.invalid || loading">
+                @if (loading) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Signing in...
+                } @else {
+                  <i class="bi bi-box-arrow-in-right me-2"></i>
+                  Sign In
+                }
+              </button>
+            </div>
+
+            <div class="text-center">
+              <p class="mb-0">
+                Don't have an account?
+                <a routerLink="/register" class="text-primary fw-semibold text-decoration-none">Register here</a>
+              </p>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer text-center py-3 bg-light">
+          <small class="text-muted">
+            <i class="bi bi-shield-check me-1"></i>
+            Secure login with JWT authentication
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

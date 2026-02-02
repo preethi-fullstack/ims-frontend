@@ -1,0 +1,60 @@
+<div class="container mt-4">
+  <h2>Categories</h2>
+
+  <!-- Search Input -->
+  <div class="mb-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search categories..."
+      [(ngModel)]="searchTerm"
+    />
+  </div>
+
+  <!-- Add Category Button -->
+  <div class="mb-3">
+    <button class="btn btn-primary" (click)="addNewCategory()">Add New Category</button>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="alert alert-info">
+    Loading categories...
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Categories Table -->
+  <table *ngIf="!loading && filteredCategories.length > 0" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let category of filteredCategories">
+        <td>{{ category.id }}</td>
+        <td>{{ category.name }}</td>
+        <td>{{ category.description }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-2" (click)="editCategory(category.id)">
+            Edit
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="deleteCategory(category.id)">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- No Categories Found -->
+  <div *ngIf="!loading && filteredCategories.length === 0" class="alert alert-secondary">
+    No categories found.
+  </div>
+</div>

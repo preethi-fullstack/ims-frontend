@@ -1,0 +1,221 @@
+<div class="reports-container">
+  <div class="header-section">
+    <h1>📊 Analytics & Reports</h1>
+    <div class="controls-section">
+      <div class="report-type-selector">
+        <label for="reportType">Report Type:</label>
+        <select id="reportType" [(ngModel)]="reportType" (change)="loadData()" class="report-select">
+          <option value="sales">Sales Report</option>
+          <option value="inventory">Inventory Report</option>
+          <option value="performance">Performance Report</option>
+        </select>
+      </div>
+
+      <div class="date-range" *ngIf="reportType !== 'inventory'">
+        <div class="date-input-group">
+          <label for="startDate">From</label>
+          <input type="date" id="startDate" [(ngModel)]="startDate" (change)="loadData()" class="date-input">
+        </div>
+        <div class="date-input-group">
+          <label for="endDate">To</label>
+          <input type="date" id="endDate" [(ngModel)]="endDate" (change)="loadData()" class="date-input">
+        </div>
+      </div>
+
+      <button class="export-btn" (click)="exportReport()">
+        📥 Export {{ getReportTypeName() }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Generating report data...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-state">
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadData()" class="retry-btn">Retry</button>
+  </div>
+
+  <div *ngIf="!loading && !errorMessage" class="report-content">
+    <!-- Sales Report -->
+    <div *ngIf="reportType === 'sales'" class="sales-report">
+      <div class="report-header">
+        <h2>Sales Analysis Report</h2>
+        <p class="report-period">{{ startDate }} to {{ endDate }}</p>
+      </div>
+
+      <div *ngIf="salesData.length === 0" class="no-data">
+        <p>No sales data available for the selected period.</p>
+      </div>
+
+      <div *ngIf="salesData.length > 0" class="sales-data">
+        <div class="summary-cards">
+          <div class="summary-card">
+            <h3>Total Sales</h3>
+            <p class="summary-value sales-value">{{ formatCurrency(getTotalSales()) }}</p>
+          </div>
+          <div class="summary-card">
+            <h3>Total Purchases</h3>
+            <p class="summary-value purchases-value">{{ formatCurrency(getTotalPurchases()) }}</p>
+          </div>
+          <div class="summary-card">
+            <h3>Net Profit</h3>
+            <p class="summary-value profit-value">{{ formatCurrency(getTotalSales() - getTotalPurchases()) }}</p>
+          </div>
+        </div>
+
+        <div class="table-section">
+          <h3>Daily Breakdown</h3>
+          <div class="table-container">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Sales</th>
+                  <th>Purchases</th>
+                  <th>Net</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of salesData">
+                  <td>{{ data.date }}</td>
+                  <td class="sales-cell">{{ formatCurrency(data.sales) }}</td>
+                  <td class="purchases-cell">{{ formatCurrency(data.purchases) }}</td>
+                  <td class="net-cell">{{ formatCurrency(data.sales - data.purchases) }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td><strong>Total</strong></td>
+                  <td><strong>{{ formatCurrency(getTotalSales()) }}</strong></td>
+                  <td><strong>{{ formatCurrency(getTotalPurchases()) }}</strong></td>
+                  <td><strong>{{ formatCurrency(getTotalSales() - getTotalPurchases()) }}</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory Report -->
+    <div *ngIf="reportType === 'inventory'" class="inventory-report">
+      <div class="report-header">
+        <h2>Inventory Status Report</h2>
+        <p class="report-period">As of {{ endDate }}</p>
+      </div>
+
+      <div *ngIf="inventoryData.length === 0" class="no-data">
+        <p>No inventory data available.</p>
+      </div>
+
+      <div *ngIf="inventoryData.length > 0" class="inventory-data">
+        <div class="status-summary">
+          <div class="status-card" *ngFor="let status of getStockStatusSummary()" [class]="'status-' + status.status.toLowerCase().replace(' ', '-')">
+            <h3>{{ status.status }}</h3>
+            <p class="status-count">{{ status.count }} items</p>
+          </div>
+        </div>
+
+        <div class="table-section">
+          <h3>Inventory Details</h3>
+          <div class="table-container">
+            <table class="report-table inventory-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Quantity</th>
+                  <th>Unit Price</th>
+                  <th>Total Value</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of inventoryData" [class]="'status-' + item.status.toLowerCase().replace(' ', '-')">
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.category }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ formatCurrency(item.price) }}</td>
+                  <td class="value-cell">{{ formatCurrency(item.totalValue) }}</td>
+                  <td>
+                    <span class="status-badge" [class]="'badge-' + item.status.toLowerCase().replace(' ', '-')">
+                      {{ item.status }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="4"><strong>Total Inventory Value</strong></td>
+                  <td colspan="2"><strong>{{ formatCurrency(getTotalInventoryValue()) }}</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Report -->
+    <div *ngIf="reportType === 'performance'" class="performance-report">
+      <div class="report-header">
+        <h2>Employee Performance Report</h2>
+        <p class="report-period">{{ startDate }} to {{ endDate }}</p>
+      </div>
+
+      <div *ngIf="performanceData.length === 0" class="no-data">
+        <p>No performance data available for the selected period.</p>
+      </div>
+
+      <div *ngIf="performanceData.length > 0" class="performance-data">
+        <div class="performance-metrics">
+          <div class="metric-card">
+            <h3>Top Performer</h3>
+            <p class="metric-value">{{ getTopPerformer()?.name || 'N/A' }}</p>
+            <p class="metric-subtitle">Sales: {{ formatCurrency(getTopPerformer()?.sales || 0) }}</p>
+          </div>
+          <div class="metric-card">
+            <h3>Total Sales</h3>
+            <p class="metric-value">{{ formatCurrency(getTotalPerformanceSales()) }}</p>
+          </div>
+          <div class="metric-card">
+            <h3>Avg Sale per Employee</h3>
+            <p class="metric-value">{{ formatCurrency(getAverageSalePerEmployee()) }}</p>
+          </div>
+        </div>
+
+        <div class="table-section">
+          <h3>Employee Performance Details</h3>
+          <div class="table-container">
+            <table class="report-table performance-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Employee</th>
+                  <th>Total Sales</th>
+                  <th>Transactions</th>
+                  <th>Average Sale</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of performanceData; let i = index" [class.top-performer]="i === 0">
+                  <td class="rank-cell">
+                    <span class="rank-badge" *ngIf="i < 3">🏆</span>
+                    {{ i + 1 }}
+                  </td>
+                  <td>{{ data.name }}</td>
+                  <td class="sales-cell">{{ formatCurrency(data.sales) }}</td>
+                  <td>{{ data.transactions }}</td>
+                  <td>{{ formatCurrency(data.sales / data.transactions) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

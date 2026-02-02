@@ -1,0 +1,47 @@
+.table th {
+  font-weight: 600;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+}
+
+.badge {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+}
+
+.fw-bold {
+  font-weight: 600 !important;
+}
+
+.form-select {
+  cursor: pointer;
+}
+
+.btn-group .btn {
+  border-radius: 4px;
+}
+
+.card {
+  border: none;
+  border-radius: 8px;
+}
+
+.bi {
+  font-size: 1rem;
+}
+
+.text-success {
+  color: #198754 !important;
+}
+
+.text-warning {
+  color: #fd7e14 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}

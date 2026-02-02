@@ -1,0 +1,264 @@
+/* Profile Component Styles */
+
+/* User Avatar */
+.avatar-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+.avatar-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #4361ee;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 3px solid white;
+  transition: all 0.3s ease;
+}
+
+.avatar-overlay:hover {
+  background: #3a56d4;
+  transform: scale(1.1);
+}
+
+/* Stats Cards */
+.stats-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.stats-icon {
+  font-size: 2.5rem;
+  opacity: 0.9;
+}
+
+/* Form Styles */
+.form-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.form-section:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.form-control:disabled {
+  background-color: #f8f9fa;
+  border-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* Security Section */
+.security-item {
+  border-left: 3px solid transparent;
+  padding-left: 1rem;
+  transition: all 0.3s ease;
+}
+
+.security-item:hover {
+  border-left-color: #4361ee;
+  background-color: #f8f9fa;
+  padding-left: 1.5rem;
+}
+
+.security-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.security-icon-success {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+}
+
+.security-icon-info {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+.security-icon-danger {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+}
+
+/* Badge Styles */
+.role-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  background-color: #e9ecef;
+  overflow: hidden;
+}
+
+.password-strength-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.password-strength-weak {
+  background-color: #e74c3c;
+  width: 30%;
+}
+
+.password-strength-medium {
+  background-color: #f39c12;
+  width: 60%;
+}
+
+.password-strength-strong {
+  background-color: #2ecc71;
+  width: 100%;
+}
+
+/* Action Buttons */
+.action-btn {
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading State */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 10;
+}
+
+/* Success Message Animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .avatar-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .stats-card {
+    margin-bottom: 1rem;
+  }
+  
+  .form-section {
+    padding: 1.5rem;
+  }
+  
+  .security-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .security-icon {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+  
+  .form-control,
+  .btn,
+  .avatar-overlay,
+  .action-btn {
+    display: none !important;
+  }
+}

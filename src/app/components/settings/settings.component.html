@@ -1,0 +1,719 @@
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h2 mb-1">System Settings</h1>
+          <p class="text-muted mb-0">Configure system preferences and management options</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-primary" (click)="exportSettings()">
+            <i class="bi bi-download me-1"></i> Export Settings
+          </button>
+          <label class="btn btn-outline-secondary">
+            <i class="bi bi-upload me-1"></i> Import Settings
+            <input type="file" accept=".json" (change)="importSettings($event)" hidden>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (loading && !saving) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3">Loading settings...</p>
+    </div>
+  } @else {
+    <!-- Success/Error Messages -->
+    @if (successMessage) {
+      <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+    }
+    
+    @if (errorMessage) {
+      <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+    }
+
+    <div class="row">
+      <!-- Settings Navigation -->
+      <div class="col-lg-3 col-xl-2 mb-4">
+        <div class="card shadow">
+          <div class="list-group list-group-flush">
+            <button class="list-group-item list-group-item-action d-flex align-items-center" 
+                    [class.active]="activeTab === 'general'"
+                    (click)="setActiveTab('general')">
+              <i class="bi bi-gear me-2"></i> General
+            </button>
+            <button class="list-group-item list-group-item-action d-flex align-items-center" 
+                    [class.active]="activeTab === 'security'"
+                    (click)="setActiveTab('security')">
+              <i class="bi bi-shield-lock me-2"></i> Security
+            </button>
+            <button class="list-group-item list-group-item-action d-flex align-items-center" 
+                    [class.active]="activeTab === 'email'"
+                    (click)="setActiveTab('email')">
+              <i class="bi bi-envelope me-2"></i> Email
+            </button>
+            <button class="list-group-item list-group-item-action d-flex align-items-center" 
+                    [class.active]="activeTab === 'permissions'"
+                    (click)="setActiveTab('permissions')">
+              <i class="bi bi-person-badge me-2"></i> Permissions
+            </button>
+            <button class="list-group-item list-group-item-action d-flex align-items-center" 
+                    [class.active]="activeTab === 'backup'"
+                    (click)="setActiveTab('backup')">
+              <i class="bi bi-cloud-arrow-up me-2"></i> Backup
+            </button>
+            <button class="list-group-item list-group-item-action d-flex align-items-center" 
+                    [class.active]="activeTab === 'system'"
+                    (click)="setActiveTab('system')">
+              <i class="bi bi-info-circle me-2"></i> System Info
+            </button>
+          </div>
+        </div>
+
+        <!-- System Actions -->
+        <div class="card shadow mt-3">
+          <div class="card-header bg-white">
+            <h6 class="mb-0 fw-semibold">Quick Actions</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-success" (click)="clearCache()">
+                <i class="bi bi-trash me-1"></i> Clear Cache
+              </button>
+              <button class="btn btn-outline-danger" (click)="resetSettings()">
+                <i class="bi bi-arrow-clockwise me-1"></i> Reset Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Content -->
+      <div class="col-lg-9 col-xl-10">
+        
+        <!-- General Settings Tab -->
+        @if (activeTab === 'general') {
+          <div class="card shadow">
+            <div class="card-header bg-white">
+              <h5 class="mb-0 fw-semibold"><i class="bi bi-gear me-2"></i> General Settings</h5>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="generalForm" (ngSubmit)="onGeneralSubmit()" novalidate>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="companyName" class="form-label fw-semibold">Company Name</label>
+                    <input type="text" class="form-control" id="companyName" formControlName="companyName"
+                           [class.is-invalid]="companyName?.invalid && companyName?.touched">
+                    @if (companyName?.invalid && companyName?.touched) {
+                      <div class="invalid-feedback">
+                        @if (companyName?.errors?.['required']) { Company name is required }
+                        @if (companyName?.errors?.['minlength']) { Minimum 2 characters required }
+                      </div>
+                    }
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label for="companyEmail" class="form-label fw-semibold">Company Email</label>
+                    <input type="email" class="form-control" id="companyEmail" formControlName="companyEmail"
+                           [class.is-invalid]="companyEmail?.invalid && companyEmail?.touched">
+                    @if (companyEmail?.invalid && companyEmail?.touched) {
+                      <div class="invalid-feedback">
+                        @if (companyEmail?.errors?.['required']) { Email is required }
+                        @if (companyEmail?.errors?.['email']) { Please enter a valid email }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="currency" class="form-label fw-semibold">Currency</label>
+                    <select class="form-select" id="currency" formControlName="currency">
+                      @for (currency of currencies; track currency) {
+                        <option [value]="currency">{{ currency }}</option>
+                      }
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label for="timezone" class="form-label fw-semibold">Timezone</label>
+                    <select class="form-select" id="timezone" formControlName="timezone">
+                      @for (timezone of timezones; track timezone) {
+                        <option [value]="timezone">{{ timezone }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="lowStockThreshold" class="form-label fw-semibold">Low Stock Threshold</label>
+                    <input type="number" class="form-control" id="lowStockThreshold" formControlName="lowStockThreshold"
+                           min="1" step="1" [class.is-invalid]="lowStockThreshold?.invalid && lowStockThreshold?.touched">
+                    @if (lowStockThreshold?.invalid && lowStockThreshold?.touched) {
+                      <div class="invalid-feedback">
+                        Minimum value is 1
+                      </div>
+                    }
+                    <div class="form-text">Send alerts when stock falls below this level</div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label for="taxRate" class="form-label fw-semibold">Tax Rate (%)</label>
+                    <input type="number" class="form-control" id="taxRate" formControlName="taxRate"
+                           min="0" max="100" step="0.1" [class.is-invalid]="taxRate?.invalid && taxRate?.touched">
+                    @if (taxRate?.invalid && taxRate?.touched) {
+                      <div class="invalid-feedback">
+                        Tax rate must be between 0 and 100
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Notifications</label>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="enableNotifications" 
+                             formControlName="enableNotifications">
+                      <label class="form-check-label" for="enableNotifications">
+                        Enable system notifications
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Auto Backup</label>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="autoBackup" 
+                             formControlName="autoBackup">
+                      <label class="form-check-label" for="autoBackup">
+                        Enable automatic backups
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                  <div></div>
+                  <button type="submit" class="btn btn-primary" [disabled]="generalForm.invalid || saving">
+                    @if (saving) {
+                      <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Saving...
+                    } @else {
+                      <i class="bi bi-save me-2"></i> Save General Settings
+                    }
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        }
+
+        <!-- Security Settings Tab -->
+        @if (activeTab === 'security') {
+          <div class="card shadow">
+            <div class="card-header bg-white">
+              <h5 class="mb-0 fw-semibold"><i class="bi bi-shield-lock me-2"></i> Security Settings</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">Two-Factor Authentication</label>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="twoFactorAuth" 
+                           [(ngModel)]="securitySettings.twoFactorAuth">
+                    <label class="form-check-label" for="twoFactorAuth">
+                      Enable 2FA for all users
+                    </label>
+                  </div>
+                  <div class="form-text">Adds an extra layer of security to user accounts</div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">Audit Logging</label>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="auditLogging" 
+                           [(ngModel)]="securitySettings.auditLogging">
+                    <label class="form-check-label" for="auditLogging">
+                      Enable audit logging
+                    </label>
+                  </div>
+                  <div class="form-text">Log all system activities for security monitoring</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="sessionTimeout" class="form-label fw-semibold">Session Timeout (minutes)</label>
+                  <input type="number" class="form-control" id="sessionTimeout" 
+                         [(ngModel)]="securitySettings.sessionTimeout" min="5" max="240">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                  <label for="passwordExpiry" class="form-label fw-semibold">Password Expiry (days)</label>
+                  <input type="number" class="form-control" id="passwordExpiry" 
+                         [(ngModel)]="securitySettings.passwordExpiry" min="1" max="365">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                  <label for="maxLoginAttempts" class="form-label fw-semibold">Max Login Attempts</label>
+                  <input type="number" class="form-control" id="maxLoginAttempts" 
+                         [(ngModel)]="securitySettings.maxLoginAttempts" min="1" max="10">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">API Access</label>
+                <div class="form-check form-switch mb-2">
+                  <input class="form-check-input" type="checkbox" id="enableApiAccess" 
+                         [(ngModel)]="securitySettings.enableApiAccess">
+                  <label class="form-check-label" for="enableApiAccess">
+                    Enable API access
+                  </label>
+                </div>
+                
+                @if (securitySettings.enableApiAccess) {
+                  <div class="input-group">
+                    <input type="password" class="form-control" id="apiKey" 
+                           [value]="securitySettings.apiKey" readonly>
+                    <button class="btn btn-outline-secondary" type="button" (click)="showApiKey()">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" type="button" (click)="copyApiKey()">
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" type="button" (click)="regenerateApiKey()">
+                      <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                  </div>
+                  <div class="form-text">Keep your API key secure. Regenerate if compromised.</div>
+                }
+              </div>
+
+              <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                <div></div>
+                <button type="button" class="btn btn-primary" (click)="onSecuritySubmit()" [disabled]="saving">
+                  @if (saving) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Saving...
+                  } @else {
+                    <i class="bi bi-save me-2"></i> Save Security Settings
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Email Settings Tab -->
+        @if (activeTab === 'email') {
+          <div class="card shadow">
+            <div class="card-header bg-white">
+              <h5 class="mb-0 fw-semibold"><i class="bi bi-envelope me-2"></i> Email Settings</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="smtpHost" class="form-label fw-semibold">SMTP Host</label>
+                  <input type="text" class="form-control" id="smtpHost" 
+                         [(ngModel)]="emailSettings.smtpHost">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                  <label for="smtpPort" class="form-label fw-semibold">SMTP Port</label>
+                  <input type="number" class="form-control" id="smtpPort" 
+                         [(ngModel)]="emailSettings.smtpPort">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                  <label for="smtpSecurity" class="form-label fw-semibold">Security</label>
+                  <select class="form-select" id="smtpSecurity" [(ngModel)]="emailSettings.smtpSecurity">
+                    <option value="none">None</option>
+                    <option value="tls">TLS</option>
+                    <option value="ssl">SSL</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="smtpUsername" class="form-label fw-semibold">SMTP Username</label>
+                  <input type="text" class="form-control" id="smtpUsername" 
+                         [(ngModel)]="emailSettings.smtpUsername">
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="smtpPassword" class="form-label fw-semibold">SMTP Password</label>
+                  <input type="password" class="form-control" id="smtpPassword" 
+                         [(ngModel)]="emailSettings.smtpPassword">
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Email Notifications</label>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="sendLowStockAlerts" 
+                           [(ngModel)]="emailSettings.sendLowStockAlerts">
+                    <label class="form-check-label" for="sendLowStockAlerts">
+                      Send low stock alerts
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sendDailyReports" 
+                           [(ngModel)]="emailSettings.sendDailyReports">
+                    <label class="form-check-label" for="sendDailyReports">
+                      Send daily reports
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <button class="btn btn-outline-primary mt-4" (click)="testEmailSettings()" [disabled]="loading">
+                    @if (loading) {
+                      <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Testing...
+                    } @else {
+                      <i class="bi bi-send me-2"></i> Test Email Settings
+                    }
+                  </button>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                <div></div>
+                <button type="button" class="btn btn-primary" (click)="onEmailSubmit()" [disabled]="saving">
+                  @if (saving) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Saving...
+                  } @else {
+                    <i class="bi bi-save me-2"></i> Save Email Settings
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Permissions Tab -->
+        @if (activeTab === 'permissions') {
+          <div class="card shadow">
+            <div class="card-header bg-white">
+              <h5 class="mb-0 fw-semibold"><i class="bi bi-person-badge me-2"></i> Staff Permissions</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">Product Management</label>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="allowStaffAddProducts" 
+                           [(ngModel)]="userPermissions.allowStaffAddProducts">
+                    <label class="form-check-label" for="allowStaffAddProducts">
+                      Allow staff to add products
+                    </label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="allowStaffEditProducts" 
+                           [(ngModel)]="userPermissions.allowStaffEditProducts">
+                    <label class="form-check-label" for="allowStaffEditProducts">
+                      Allow staff to edit products
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="allowStaffDeleteProducts" 
+                           [(ngModel)]="userPermissions.allowStaffDeleteProducts">
+                    <label class="form-check-label" for="allowStaffDeleteProducts">
+                      Allow staff to delete products
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">Other Permissions</label>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="allowStaffViewReports" 
+                           [(ngModel)]="userPermissions.allowStaffViewReports">
+                    <label class="form-check-label" for="allowStaffViewReports">
+                      Allow staff to view reports
+                    </label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="allowStaffManageCategories" 
+                           [(ngModel)]="userPermissions.allowStaffManageCategories">
+                    <label class="form-check-label" for="allowStaffManageCategories">
+                      Allow staff to manage categories
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="allowStaffManageSuppliers" 
+                           [(ngModel)]="userPermissions.allowStaffManageSuppliers">
+                    <label class="form-check-label" for="allowStaffManageSuppliers">
+                      Allow staff to manage suppliers
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">Approval Requirements</label>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="requireApprovalForPurchases" 
+                           [(ngModel)]="userPermissions.requireApprovalForPurchases">
+                    <label class="form-check-label" for="requireApprovalForPurchases">
+                      Require approval for purchases
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="requireApprovalForSales" 
+                           [(ngModel)]="userPermissions.requireApprovalForSales">
+                    <label class="form-check-label" for="requireApprovalForSales">
+                      Require approval for sales
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                <div></div>
+                <button type="button" class="btn btn-primary" (click)="onPermissionsSubmit()" [disabled]="saving">
+                  @if (saving) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Saving...
+                  } @else {
+                    <i class="bi bi-save me-2"></i> Save Permission Settings
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Backup Tab -->
+        @if (activeTab === 'backup') {
+          <div class="card shadow">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+              <h5 class="mb-0 fw-semibold"><i class="bi bi-cloud-arrow-up me-2"></i> Backup Management</h5>
+              <button class="btn btn-primary" (click)="createBackup()" [disabled]="loading">
+                <i class="bi bi-plus-circle me-1"></i> Create Backup
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Date & Time</th>
+                      <th>Type</th>
+                      <th>Size</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (backup of backupHistory; track backup.date) {
+                      <tr>
+                        <td>{{ formatDate(backup.date) }}</td>
+                        <td>{{ backup.type }}</td>
+                        <td>{{ backup.size }}</td>
+                        <td>
+                          <span [class]="getBackupStatusClass(backup.status)">
+                            {{ backup.status }}
+                          </span>
+                        </td>
+                        <td>
+                          <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" (click)="restoreBackup(backup)">
+                              <i class="bi bi-arrow-clockwise"></i> Restore
+                            </button>
+                            <button class="btn btn-outline-danger" (click)="deleteBackup(backup)">
+                              <i class="bi bi-trash"></i> Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="5" class="text-center py-4">
+                          <i class="bi bi-cloud-slash text-muted fs-1 mb-3"></i>
+                          <p class="text-muted">No backups found</p>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle me-2"></i>
+                Backups are automatically created according to your backup frequency settings.
+                Manual backups can be created at any time.
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- System Info Tab -->
+        @if (activeTab === 'system') {
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <div class="card shadow h-100">
+                <div class="card-header bg-white">
+                  <h5 class="mb-0 fw-semibold"><i class="bi bi-info-circle me-2"></i> System Information</h5>
+                </div>
+                <div class="card-body">
+                  <div class="list-group list-group-flush">
+                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between">
+                      <span class="text-muted">Application Version</span>
+                      <span class="fw-semibold">{{ systemInfo.appVersion }}</span>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between">
+                      <span class="text-muted">Database Size</span>
+                      <span class="fw-semibold">{{ systemInfo.databaseSize }}</span>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between">
+                      <span class="text-muted">Server Uptime</span>
+                      <span class="fw-semibold">{{ systemInfo.serverUptime }}</span>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between">
+                      <span class="text-muted">Last Updated</span>
+                      <span class="fw-semibold">{{ systemInfo.lastUpdated }}</span>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between">
+                      <span class="text-muted">Total Users</span>
+                      <span class="badge bg-primary">{{ systemInfo.totalUsers }}</span>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between">
+                      <span class="text-muted">Total Products</span>
+                      <span class="badge bg-success">{{ systemInfo.totalProducts }}</span>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex justify-content-between">
+                      <span class="text-muted">Total Transactions</span>
+                      <span class="badge bg-info">{{ systemInfo.totalTransactions }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+              <div class="card shadow h-100">
+                <div class="card-header bg-white">
+                  <h5 class="mb-0 fw-semibold"><i class="bi bi-speedometer2 me-2"></i> System Status</h5>
+                </div>
+                <div class="card-body">
+                  <div class="list-group list-group-flush">
+                    <div class="list-group-item border-0 px-0 py-2 d-flex align-items-center">
+                      <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                      <div>
+                        <h6 class="mb-1">Database Connection</h6>
+                        <p class="text-muted mb-0">Connected and healthy</p>
+                      </div>
+                      <div class="ms-auto">
+                        <span class="badge bg-success">Online</span>
+                      </div>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex align-items-center">
+                      <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                      <div>
+                        <h6 class="mb-1">Email Service</h6>
+                        <p class="text-muted mb-0">SMTP configured and working</p>
+                      </div>
+                      <div class="ms-auto">
+                        <span class="badge bg-success">Active</span>
+                      </div>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex align-items-center">
+                      <i class="bi bi-check-circle-fill text-success me-3 fs-5"></i>
+                      <div>
+                        <h6 class="mb-1">Backup Service</h6>
+                        <p class="text-muted mb-0">Last backup: {{ formatDate(systemInfo.lastBackup) }}</p>
+                      </div>
+                      <div class="ms-auto">
+                        <span class="badge bg-success">Ready</span>
+                      </div>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex align-items-center">
+                      <i class="bi bi-exclamation-triangle-fill text-warning me-3 fs-5"></i>
+                      <div>
+                        <h6 class="mb-1">Security Status</h6>
+                        <p class="text-muted mb-0">2FA not enabled for all users</p>
+                      </div>
+                      <div class="ms-auto">
+                        <span class="badge bg-warning">Warning</span>
+                      </div>
+                    </div>
+                    <div class="list-group-item border-0 px-0 py-2 d-flex align-items-center">
+                      <i class="bi bi-info-circle-fill text-info me-3 fs-5"></i>
+                      <div>
+                        <h6 class="mb-1">Storage Usage</h6>
+                        <p class="text-muted mb-0">45.2 MB of 10 GB used</p>
+                      </div>
+                      <div class="ms-auto">
+                        <div class="progress" style="width: 100px; height: 8px;">
+                          <div class="progress-bar bg-info" role="progressbar" style="width: 0.45%"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card shadow">
+            <div class="card-header bg-white">
+              <h5 class="mb-0 fw-semibold"><i class="bi bi-tools me-2"></i> Maintenance</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <div class="card text-center h-100">
+                    <div class="card-body">
+                      <i class="bi bi-database text-primary fs-1 mb-3"></i>
+                      <h5 class="card-title">Database Optimization</h5>
+                      <p class="card-text text-muted">Optimize database tables for better performance</p>
+                      <button class="btn btn-outline-primary w-100">Optimize Now</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <div class="card text-center h-100">
+                    <div class="card-body">
+                      <i class="bi bi-file-earmark-text text-success fs-1 mb-3"></i>
+                      <h5 class="card-title">Log Files</h5>
+                      <p class="card-text text-muted">View and manage system log files</p>
+                      <button class="btn btn-outline-success w-100">View Logs</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <div class="card text-center h-100">
+                    <div class="card-body">
+                      <i class="bi bi-shield-check text-danger fs-1 mb-3"></i>
+                      <h5 class="card-title">Security Scan</h5>
+                      <p class="card-text text-muted">Run a security scan to check for vulnerabilities</p>
+                      <button class="btn btn-outline-danger w-100">Scan Now</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

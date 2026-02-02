@@ -1,0 +1,60 @@
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">
+      <i class="bi bi-shop me-2"></i>IMS
+    </a>
+    
+    <button class="navbar-toggler" type="button" 
+            (click)="isMenuCollapsed = !isMenuCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" [class.show]="!isMenuCollapsed">
+      <!-- Navigation links based on permissions -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item" *ngFor="let module of accessibleModules">
+          <a class="nav-link" [routerLink]="module.path" routerLinkActive="active">
+            <i [class]="module.icon + ' me-1'"></i> {{module.name}}
+          </a>
+        </li>
+      </ul>
+
+      <!-- User info and logout -->
+      <div class="d-flex align-items-center" *ngIf="currentUser">
+        <div class="user-info me-3">
+          <div class="d-flex align-items-center">
+            <div class="avatar me-2" 
+                 [style.background-color]="'#4ECDC4'"
+                 [style.width]="'32px'" 
+                 [style.height]="'32px'" 
+                 [style.border-radius]="'50%'"
+                 [style.display]="'flex'"
+                 [style.align-items]="'center'"
+                 [style.justify-content]="'center'"
+                 [style.color]="'white'"
+                 [style.font-weight]="'bold'">
+              {{getUserInitials()}}
+            </div>
+            <div>
+              <div class="text-white small">{{currentUser.name}}</div>
+              <span [class]="getUserRoleBadgeClass()" class="badge">
+                {{getUserRoleText()}}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <button class="btn btn-outline-light" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Warning for extra users -->
+<div *ngIf="currentUser && !permissionService.isMainUser()" class="alert alert-warning m-3">
+  <i class="bi bi-exclamation-triangle me-2"></i>
+  <strong>Limited Access:</strong> You are logged in as an extra user. Only the 4 main users have full system access.
+</div>

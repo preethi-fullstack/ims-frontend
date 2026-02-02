@@ -1,0 +1,116 @@
+<div class="container my-4">
+  <!-- Filters -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search products..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+    <div class="col-md-3">
+      <select
+        class="form-select"
+        [(ngModel)]="selectedCategoryId"
+        (change)="applyFilters()"
+      >
+        <option [ngValue]="null">All Categories</option>
+        <option *ngFor="let cat of categories" [ngValue]="cat.id">
+          {{ cat.name }}
+        </option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select
+        class="form-select"
+        [(ngModel)]="stockFilter"
+        (change)="applyFilters()"
+      >
+        <option value="all">All Stock</option>
+        <option value="in-stock">In Stock</option>
+        <option value="low-stock">Low Stock</option>
+        <option value="out-of-stock">Out of Stock</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-secondary w-100" (click)="clearFilters()">Clear</button>
+    </div>
+  </div>
+
+  <!-- View mode -->
+  <div class="d-flex justify-content-end mb-2">
+    <button class="btn btn-outline-primary me-2" [ngClass]="{active: viewMode === 'grid'}" (click)="setViewMode('grid')">Grid</button>
+    <button class="btn btn-outline-primary" [ngClass]="{active: viewMode === 'list'}" (click)="setViewMode('list')">List</button>
+  </div>
+
+  <!-- Product List -->
+  <div *ngIf="viewMode === 'grid'" class="row">
+    <div class="col-md-3 mb-3" *ngFor="let product of paginatedProducts">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">{{ product.description }}</p>
+          <p class="mb-1">Category: {{ getCategoryName(product.categoryId) }}</p>
+          <p class="mb-1">Price: {{ product.price | currency:'USD' }}</p>
+          <p class="mb-1">
+            Stock: 
+            <span [ngClass]="'text-' + getStockStatus(product.quantity).class">
+              {{ getStockStatus(product.quantity).text }}
+            </span>
+          </p>
+          <a [routerLink]="['/products', product.id]" class="btn btn-primary mt-2 w-100">View</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="viewMode === 'list'">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th (click)="onSort('name')" style="cursor: pointer">Name</th>
+          <th (click)="onSort('category')" style="cursor: pointer">Category</th>
+          <th (click)="onSort('price')" style="cursor: pointer">Price</th>
+          <th (click)="onSort('quantity')" style="cursor: pointer">Quantity</th>
+          <th>Stock</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of paginatedProducts">
+          <td>{{ product.name }}</td>
+          <td>{{ getCategoryName(product.categoryId) }}</td>
+          <td>{{ product.price | currency:'USD' }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>
+            <span [ngClass]="'text-' + getStockStatus(product.quantity).class">
+              {{ getStockStatus(product.quantity).text }}
+            </span>
+          </td>
+          <td>
+            <a [routerLink]="['/products', product.id]" class="btn btn-sm btn-info me-1">View</a>
+            <button class="btn btn-sm btn-warning me-1" (click)="quickAction('sell', product)">Sell</button>
+            <button class="btn btn-sm btn-success" (click)="quickAction('purchase', product)">Purchase</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="totalPages > 1">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [ngClass]="{disabled: currentPage === 1}">
+        <a class="page-link" (click)="changePage(currentPage - 1)">Previous</a>
+      </li>
+      <li class="page-item" *ngFor="let page of pageNumbers" [ngClass]="{active: currentPage === page}">
+        <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" [ngClass]="{disabled: currentPage === totalPages}">
+        <a class="page-link" (click)="changePage(currentPage + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>

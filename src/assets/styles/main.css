@@ -1,0 +1,186 @@
+/* Import all style files */
+@import './variables.css';
+@import './utilities.css';
+@import './components.css';
+
+/* Global Styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-dark);
+  text-decoration: none;
+}
+
+/* Lists */
+ul, ol {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+/* Code */
+code {
+  font-family: var(--font-family-monospace);
+  font-size: 0.875em;
+  color: var(--accent-color);
+  background-color: var(--bg-light);
+  padding: 0.2em 0.4em;
+  border-radius: var(--border-radius-sm);
+}
+
+pre {
+  font-family: var(--font-family-monospace);
+  background-color: var(--bg-light);
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+pre code {
+  color: inherit;
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Blockquote */
+blockquote {
+  padding: 0.5rem 1rem;
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  border-left: 4px solid var(--primary-color);
+  background-color: var(--bg-light);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Focus Outline */
+:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  a {
+    color: black !important;
+    text-decoration: underline !important;
+  }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.125rem; }
+  h6 { font-size: 1rem; }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #000000;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f0f0f0;
+    --text-primary: #000000;
+    --border-color: #000000;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

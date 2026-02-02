@@ -1,0 +1,109 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="text-center mb-0">Register</h3>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Success Message -->
+            <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+              {{ successMessage }}
+              <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+            </div>
+            
+            <!-- Error Message -->
+            <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+              {{ errorMessage }}
+              <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+            </div>
+            
+            <!-- Name Field -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="name" formControlName="name"
+                     [class.is-invalid]="f['name'].invalid && (f['name'].dirty || f['name'].touched)"
+                     placeholder="Enter your full name">
+              <div *ngIf="f['name'].invalid && (f['name'].dirty || f['name'].touched)" class="invalid-feedback">
+                <div *ngIf="f['name'].errors?.['required']">Name is required</div>
+                <div *ngIf="f['name'].errors?.['minlength']">Name must be at least 3 characters</div>
+              </div>
+            </div>
+            
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="email" formControlName="email"
+                     [class.is-invalid]="f['email'].invalid && (f['email'].dirty || f['email'].touched)"
+                     placeholder="Enter your email">
+              <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)" class="invalid-feedback">
+                <div *ngIf="f['email'].errors?.['required']">Email is required</div>
+                <div *ngIf="f['email'].errors?.['email']">Please enter a valid email</div>
+              </div>
+            </div>
+            
+            <!-- Password Field -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" formControlName="password"
+                     [class.is-invalid]="f['password'].invalid && (f['password'].dirty || f['password'].touched)"
+                     placeholder="Enter password">
+              <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" class="invalid-feedback">
+                <div *ngIf="f['password'].errors?.['required']">Password is required</div>
+                <div *ngIf="f['password'].errors?.['minlength']">Password must be at least 6 characters</div>
+              </div>
+            </div>
+            
+            <!-- Confirm Password Field -->
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword"
+                     [class.is-invalid]="(registerForm.errors?.['mismatch'] || f['confirmPassword'].invalid) && (f['confirmPassword'].dirty || f['confirmPassword'].touched)"
+                     placeholder="Confirm your password">
+              <div *ngIf="registerForm.errors?.['mismatch'] && (f['confirmPassword'].dirty || f['confirmPassword'].touched)" class="invalid-feedback">
+                Passwords do not match
+              </div>
+              <div *ngIf="f['confirmPassword'].errors?.['required'] && (f['confirmPassword'].dirty || f['confirmPassword'].touched)" class="invalid-feedback">
+                Please confirm your password
+              </div>
+            </div>
+            
+            <!-- Role Field -->
+            <div class="mb-3">
+              <label for="role" class="form-label">Role</label>
+              <select class="form-control" id="role" formControlName="role"
+                      [class.is-invalid]="f['role'].invalid && (f['role'].dirty || f['role'].touched)">
+                <option *ngFor="let role of availableRoles" [value]="role">
+                  {{ role }} - {{ getRoleDescription(role) }}
+                </option>
+              </select>
+              <div *ngIf="f['role'].invalid && (f['role'].dirty || f['role'].touched)" class="invalid-feedback">
+                <div *ngIf="f['role'].errors?.['required']">Role is required</div>
+              </div>
+              <small class="text-muted">Note: There are limits on how many users can have each role.</small>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid || loading">
+                <span *ngIf="!loading">Register</span>
+                <span *ngIf="loading">
+                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  Registering...
+                </span>
+              </button>
+            </div>
+            
+            <!-- Login Link -->
+            <div class="text-center mt-3">
+              <p>Already have an account? <a routerLink="/login" class="text-decoration-none">Login here</a></p>
+            </div>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
