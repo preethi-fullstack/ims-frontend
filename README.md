@@ -44,8 +44,6 @@ Open browser at http://localhost:4200/
 
 --->Contribution
 
-This repo is mainly for demonstration as part of my full stack project.
-Frontend communicates with the backend via REST API to manage inventory data.
 
 This repo is mainly for demonstration as part of my full stack project.
 Frontend communicates with the backend via REST API to manage inventory data.
